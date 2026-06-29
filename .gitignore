@@ -1,0 +1,7 @@
+/BallGame/Library
+/BallGame/Logs
+*.csproj
+/BallGame/Temp
+/BallGame/UserSettings
+/BallGame/.vscode
+*.sln

@@ -14,6 +14,7 @@ namespace BallGame.Pinball
         [SerializeField] private Text statusText;
 
         private Rigidbody2D activeBall;
+        private PinballDropSlotRewardController dropSlotRewardController;
         private int ballsRemaining;
         private int score;
 
@@ -43,6 +44,7 @@ namespace BallGame.Pinball
 
         private void Start()
         {
+            PinballDropSlotSceneBootstrapper.EnsureDropSlotsFor(this);
             ResetBall();
             UpdateHud();
         }
@@ -60,7 +62,24 @@ namespace BallGame.Pinball
             UpdateHud();
         }
 
-        public void DrainBall()
+        public void AddBalls(int amount)
+        {
+            ballsRemaining += Mathf.Max(0, amount);
+            UpdateHud();
+        }
+
+        public void AwardBonusBalls(int amount, string reason)
+        {
+            AddBalls(amount);
+            SetStatus($"{reason} +{Mathf.Max(0, amount)} balls");
+        }
+
+        public void RegisterDropSlotRewardController(PinballDropSlotRewardController controller)
+        {
+            dropSlotRewardController = controller;
+        }
+
+        public void DrainBall(string statusMessage = null)
         {
             ballsRemaining--;
 
@@ -69,6 +88,10 @@ namespace BallGame.Pinball
                 ballsRemaining = startingBalls;
                 score = 0;
                 SetStatus("Game Over - score reset");
+            }
+            else if (!string.IsNullOrEmpty(statusMessage))
+            {
+                SetStatus(statusMessage);
             }
             else
             {
@@ -99,6 +122,7 @@ namespace BallGame.Pinball
             activeBall.position = ballSpawn.position;
             activeBall.rotation = 0f;
             activeBall.Sleep();
+            dropSlotRewardController?.StartNewRound();
         }
 
         private void UpdateHud()

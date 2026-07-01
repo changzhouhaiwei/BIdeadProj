@@ -75,6 +75,7 @@ namespace BallGame.Pinball
                 && table.Find("Left Flipper") != null
                 && table.Find("Right Flipper") != null
                 && table.Find("Plunger Trigger") != null
+                && table.Find("Drop Slot Rewards") != null
                 && table.Find("Pinball") != null
                 && HasValidSprite(table.Find("Pinball"))
                 && HasValidSprite(table.Find("Neon Backboard"));
@@ -144,6 +145,7 @@ namespace BallGame.Pinball
             CreateBumpers(table.transform);
             CreateFlippers(table.transform);
             CreatePlunger(table.transform);
+            CreateDropSlots(table.transform);
             CreateBall(table.transform, spawn.position);
         }
 
@@ -219,7 +221,7 @@ namespace BallGame.Pinball
             CreateBox(parent, "Left Guide", new Vector2(-2.05f, -2.75f), new Vector2(1.8f, 0.18f), 28f, new Color(1f, 0.44f, 0.16f), 4);
             CreateBox(parent, "Right Guide", new Vector2(1.05f, -2.75f), new Vector2(1.8f, 0.18f), -28f, new Color(1f, 0.44f, 0.16f), 4);
 
-            GameObject loseZone = CreateBox(parent, "Lose Zone", new Vector2(0f, -4.15f), new Vector2(5.7f, 0.35f), 0f, new Color(0.3f, 0.02f, 0.05f), 3, true);
+            GameObject loseZone = CreateBox(parent, "Lose Zone", new Vector2(0f, -4.55f), new Vector2(5.7f, 0.28f), 0f, new Color(0.3f, 0.02f, 0.05f), 3, true);
             loseZone.AddComponent<AudioSource>();
             loseZone.AddComponent<PinballLoseZone>().Configure(drainSound);
         }
@@ -266,6 +268,42 @@ namespace BallGame.Pinball
             GameObject visual = CreateBox(parent, "Plunger Visual", new Vector2(2.65f, -4.0f), new Vector2(0.55f, 0.18f), 0f, new Color(1f, 0.95f, 0.35f), 10);
             trigger.AddComponent<AudioSource>();
             trigger.AddComponent<PinballPlunger>().Configure(visual.transform, Vector2.up, 7f, 25f, stressSound, launchSound);
+        }
+
+        private void CreateDropSlots(Transform parent)
+        {
+            GameObject root = new GameObject("Drop Slot Rewards");
+            root.transform.SetParent(parent);
+            PinballDropSlotRewardController controller = root.AddComponent<PinballDropSlotRewardController>();
+
+            const int slotCount = 5;
+            const float leftEdge = -2.55f;
+            const float rightEdge = 1.75f;
+            const float dividerWidth = 0.08f;
+            const float slotY = -4.02f;
+            const float lightY = -3.66f;
+            float cellWidth = (rightEdge - leftEdge) / slotCount;
+            float slotWidth = cellWidth - dividerWidth;
+            for (int i = 0; i < slotCount; i++)
+            {
+                float x = leftEdge + cellWidth * (i + 0.5f);
+                GameObject slotVisual = CreateBox(root.transform, $"Drop Slot {i + 1} Visual", new Vector2(x, slotY), new Vector2(slotWidth, 0.24f), 0f, new Color(0.08f, 0.08f, 0.11f), 6);
+                slotVisual.GetComponent<Collider2D>().enabled = false;
+                SpriteRenderer slotRenderer = slotVisual.GetComponent<SpriteRenderer>();
+
+                GameObject trigger = CreateBox(root.transform, $"Drop Slot {i + 1}", new Vector2(x, slotY), new Vector2(slotWidth, 0.34f), 0f, new Color(1f, 1f, 1f, 0f), 1, true);
+                GameObject light = CreateCircle(root.transform, $"Drop Slot {i + 1} Red Light", new Vector2(x, lightY), 0.24f, new Color(0.18f, 0.02f, 0.025f), 11);
+
+                PinballDropSlot slot = trigger.AddComponent<PinballDropSlot>();
+                slot.Configure(controller, light.GetComponent<SpriteRenderer>(), slotRenderer, new Color(1f, 0.08f, 0.05f), new Color(0.18f, 0.02f, 0.025f));
+                controller.RegisterSlot(slot);
+            }
+
+            for (int i = 0; i <= slotCount; i++)
+            {
+                float x = leftEdge + cellWidth * i;
+                CreateBox(root.transform, $"Drop Slot Divider {i}", new Vector2(x, slotY + 0.04f), new Vector2(dividerWidth, 0.62f), 0f, new Color(0.14f, 0.48f, 1f), 7);
+            }
         }
 
         private void CreateBall(Transform parent, Vector3 position)

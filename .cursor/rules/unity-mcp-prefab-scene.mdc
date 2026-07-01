@@ -1,0 +1,14 @@
+---
+description: Unity scene and prefab changes should use MCP when available
+alwaysApply: true
+---
+
+# Unity MCP for Scene and Prefab Work
+
+When a task requires manipulating Unity scenes, GameObjects, components, prefabs, or editor state:
+
+- First determine whether the Unity MCP server is available and whether a Unity instance is connected.
+- If Unity MCP is available and connected, use MCP resources/tools for the scene or prefab operation instead of relying only on file edits.
+- Before mutating editor state, read the relevant MCP resources to understand the current scene/project state.
+- After creating or modifying scripts that affect Unity components, check the Unity console through MCP for compilation errors before using those types in the editor.
+- If MCP is unavailable or no Unity instance is connected, explain that limitation and proceed with file-based changes only when appropriate.

@@ -47,6 +47,7 @@ namespace BallGame.Pinball
             CreateBumpers();
             CreateFlippers();
             CreatePlunger();
+            CreateDropSlots();
             CreateBall(spawn.position);
         }
 
@@ -116,7 +117,7 @@ namespace BallGame.Pinball
             CreateBox("Left Lower Wall", new Vector2(-2.95f, -3.4f), new Vector2(0.22f, 1.05f), 0f, new Color(0.18f, 0.36f, 0.85f));
             CreateBox("Right Lower Wall", new Vector2(2.95f, -3.4f), new Vector2(0.22f, 1.05f), 0f, new Color(0.18f, 0.36f, 0.85f));
 
-            GameObject loseZone = CreateBox("Lose Zone", new Vector2(0f, -4.15f), new Vector2(5.7f, 0.35f), 0f, new Color(0.35f, 0.05f, 0.08f), true);
+            GameObject loseZone = CreateBox("Lose Zone", new Vector2(0f, -4.55f), new Vector2(5.7f, 0.28f), 0f, new Color(0.35f, 0.05f, 0.08f), true);
             loseZone.AddComponent<PinballLoseZone>();
         }
 
@@ -144,6 +145,46 @@ namespace BallGame.Pinball
             GameObject trigger = CreateBox("Plunger Trigger", new Vector2(2.65f, -3.25f), new Vector2(0.7f, 1.4f), 0f, new Color(0.15f, 0.7f, 0.25f), true);
             GameObject visual = CreateBox("Plunger Visual", new Vector2(2.65f, -4.0f), new Vector2(0.55f, 0.16f), 0f, new Color(0.95f, 0.95f, 0.55f));
             trigger.AddComponent<PinballPlunger>().Configure(visual.transform, Vector2.up, 7f, 25f);
+        }
+
+        private void CreateDropSlots()
+        {
+            GameObject root = new GameObject("Drop Slot Rewards");
+            root.transform.SetParent(transform);
+            PinballDropSlotRewardController controller = root.AddComponent<PinballDropSlotRewardController>();
+
+            const int slotCount = 5;
+            const float leftEdge = -2.55f;
+            const float rightEdge = 1.75f;
+            const float dividerWidth = 0.08f;
+            const float slotY = -4.02f;
+            const float lightY = -3.66f;
+            float cellWidth = (rightEdge - leftEdge) / slotCount;
+            float slotWidth = cellWidth - dividerWidth;
+            for (int i = 0; i < slotCount; i++)
+            {
+                float x = leftEdge + cellWidth * (i + 0.5f);
+                GameObject slotVisual = CreateBox($"Drop Slot {i + 1} Visual", new Vector2(x, slotY), new Vector2(slotWidth, 0.24f), 0f, new Color(0.08f, 0.08f, 0.11f));
+                slotVisual.GetComponent<Collider2D>().enabled = false;
+                slotVisual.transform.SetParent(root.transform);
+                SpriteRenderer slotRenderer = slotVisual.GetComponent<SpriteRenderer>();
+
+                GameObject trigger = CreateBox($"Drop Slot {i + 1}", new Vector2(x, slotY), new Vector2(slotWidth, 0.34f), 0f, new Color(1f, 1f, 1f, 0f), true);
+                trigger.transform.SetParent(root.transform);
+                GameObject light = CreateCircle($"Drop Slot {i + 1} Red Light", new Vector2(x, lightY), 0.24f, new Color(0.18f, 0.02f, 0.025f), 8);
+                light.transform.SetParent(root.transform);
+
+                PinballDropSlot slot = trigger.AddComponent<PinballDropSlot>();
+                slot.Configure(controller, light.GetComponent<SpriteRenderer>(), slotRenderer, new Color(1f, 0.08f, 0.05f), new Color(0.18f, 0.02f, 0.025f));
+                controller.RegisterSlot(slot);
+            }
+
+            for (int i = 0; i <= slotCount; i++)
+            {
+                float x = leftEdge + cellWidth * i;
+                GameObject divider = CreateBox($"Drop Slot Divider {i}", new Vector2(x, slotY + 0.04f), new Vector2(dividerWidth, 0.62f), 0f, new Color(0.18f, 0.36f, 0.85f));
+                divider.transform.SetParent(root.transform);
+            }
         }
 
         private void CreateBall(Vector3 position)
@@ -188,6 +229,20 @@ namespace BallGame.Pinball
 
             bumper.AddComponent<PinballBumper>().Configure(score, 8.5f);
             return bumper;
+        }
+
+        private GameObject CreateCircle(string name, Vector2 position, float size, Color color, int sortingOrder)
+        {
+            GameObject circle = new GameObject(name);
+            circle.transform.SetParent(transform);
+            circle.transform.position = position;
+            circle.transform.localScale = Vector3.one * size;
+
+            SpriteRenderer renderer = circle.AddComponent<SpriteRenderer>();
+            renderer.sprite = circleSprite;
+            renderer.color = color;
+            renderer.sortingOrder = sortingOrder;
+            return circle;
         }
 
         private GameObject CreateBox(string name, Vector2 position, Vector2 size, float rotation, Color color, bool isTrigger = false)

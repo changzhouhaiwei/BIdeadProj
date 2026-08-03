@@ -38,7 +38,10 @@ namespace BallGame.Pinball
             ClearLights();
             LightRandomSlots(currentLightCount);
 
-            PinballGameController.Instance?.SetStatus($"Red slots: {currentLightCount} | reward: +{GetReward()} balls");
+            if (PinballGameController.Instance != null && PinballGameController.Instance.IsRoundInProgress)
+            {
+                PinballGameController.Instance.SetStatus($"Red slots: {currentLightCount} | reward: +{GetReward()} balls");
+            }
         }
 
         public void ResolveSlot(PinballDropSlot slot)
@@ -53,7 +56,7 @@ namespace BallGame.Pinball
             {
                 int reward = GetReward();
                 slot.SetLit(false);
-                PinballGameController.Instance?.AwardBonusBalls(reward, "Red slot hit");
+                PinballGameController.Instance?.AwardBonusBalls(reward);
                 PinballGameController.Instance?.DrainBall($"Red slot hit +{reward} balls");
             }
             else

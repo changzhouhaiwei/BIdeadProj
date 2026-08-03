@@ -42,6 +42,19 @@ namespace BallGame.Pinball
 
         private void Update()
         {
+            PinballGameController controller = PinballGameController.Instance;
+            if (controller != null && !controller.IsRoundInProgress)
+            {
+                if (charge > 0f)
+                {
+                    charge = 0f;
+                    stressPlayed = false;
+                    UpdateVisual();
+                }
+
+                return;
+            }
+
             if (Input.GetKey(launchKey))
             {
                 charge = Mathf.Clamp01(charge + Time.deltaTime / Mathf.Max(0.01f, chargeSeconds));
@@ -52,7 +65,7 @@ namespace BallGame.Pinball
                 }
 
                 UpdateVisual();
-                PinballGameController.Instance?.SetStatus($"Charging: {Mathf.RoundToInt(charge * 100f)}%");
+                controller?.SetStatus($"Charging: {Mathf.RoundToInt(charge * 100f)}%");
                 return;
             }
 
@@ -94,6 +107,7 @@ namespace BallGame.Pinball
             if (ballInLane != null && charge > 0f)
             {
                 float force = Mathf.Lerp(minLaunchForce, maxLaunchForce, charge);
+                ballInLane.gravityScale = 0.95f;
                 ballInLane.WakeUp();
                 ballInLane.AddForce(launchDirection.normalized * force, ForceMode2D.Impulse);
                 PinballGameController.Instance?.SetStatus($"Launch force: {force:0.0}");

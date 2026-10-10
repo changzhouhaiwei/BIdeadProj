@@ -17,6 +17,16 @@ cd F:\SelfMaj\BIdeadProj\IdeaSoftware\FeishuCursorRemote
 
 然后按 [搭建指南.md](./搭建指南.md) 完成飞书登录、配对和绑定。登录要在本机交互完成，脚本不会替你填 App Secret。
 
+## 发布到网站
+
+海王优选主页的「飞书游戏」在 `http://8.130.110.101/feishu-games/`。Unity 打出 WebGL（Gzip，并勾选 Decompression Fallback）后：
+
+```powershell
+.\kit\publish-web-game.ps1 -Source "<WebGL输出目录>" -Slug "<小写短名>" -Title "<页面上的名字>"
+```
+
+只改本地站点、不上传时加 `-NoDeploy`。
+
 ## 依赖
 
 - Windows 上已安装的 OpenClaw（本机为 `2026.7.1-2`，钉死 Node：`D:\OpenClaw\deps\node-v24.18.1-win-x64`）

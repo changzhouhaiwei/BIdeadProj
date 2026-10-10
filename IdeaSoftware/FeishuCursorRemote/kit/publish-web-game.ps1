@@ -1,5 +1,5 @@
 # Publish a Unity WebGL folder to the Haiwang site tab "飞书游戏".
-# Default uploads to http://8.130.110.101/feishu-games/<slug>/
+# Default uploads to https://8.130.110.101/feishu-games/<slug>/ (self-signed IP cert)
 #
 #   .\publish-web-game.ps1 -Source D:\builds\WebGL -Slug client -Title "游戏名"
 #   .\publish-web-game.ps1 -Source D:\builds\WebGL -Slug client -Title "游戏名" -NoDeploy

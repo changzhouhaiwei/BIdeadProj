@@ -11,7 +11,7 @@ description: >-
 这条会话如果是从飞书进来的，按下面做。本地 Cursor 对话不要因为本 skill 额外提交。
 
 1. 工作区只使用 `F:\SelfMaj\BIdeadProj`。唯一例外是用户要求把 Web 端发到网站「飞书游戏」：只改 `E:\gitProj\SkillPoint\IdeaProj\WebSite\site\feishu-games\`，并走下面的发布脚本。不要改 SkillPoint 其他目录，不要把 `highway.pem` 复制进本仓库。
-2. 新文件仍按仓库目录约定放：Unity 进 `Client/`，设计文档进 `DesignDoc/`，杂项进 `ExtraDoc/`，生成脚本进 `AIScripts/`，生图进 `AIArt/`，独立小程序进 `IdeaSoftware/`。
+2. 新文件仍按仓库目录约定放：Godot 工程进 `Client/`，设计文档进 `DesignDoc/`，杂项进 `ExtraDoc/`，生成脚本进 `AIScripts/`，生图进 `AIArt/`，独立小程序进 `IdeaSoftware/`。
 3. 可以改文件、跑检查命令。不要 `git push`，不要硬重置，不要把 App Secret、token、私钥写进仓库。
 4. 本回合如果改了仓库文件，结束前运行：
 
@@ -23,12 +23,15 @@ node F:\SelfMaj\BIdeadProj\IdeaSoftware\FeishuCursorRemote\kit\auto-commit-repo.
 
 ## 把 Web 端发到飞书游戏
 
-海王优选主页有「飞书游戏」，线上是 `http://8.130.110.101/feishu-games/`。
+海王优选主页有「飞书游戏」，线上请用 `https://8.130.110.101/feishu-games/`（Godot Web 需要 HTTPS；HTTP 仍可用但不跑 Godot）。
 
-Unity 用 WebGL 打。Compression Format 选 Gzip，并勾选 Decompression Fallback。`-Source` 指输出目录本身，里面直接有 `index.html`。
+Godot 无界面导出网页。预设名是 `Web`，线程支持保持关闭。`-Source` 指输出目录本身，里面直接有 `index.html`。
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File F:\SelfMaj\BIdeadProj\IdeaSoftware\FeishuCursorRemote\kit\publish-web-game.ps1 -Source "<WebGL输出目录>" -Slug "<小写短名>" -Title "<页面上的名字>"
+godot --headless --path F:\SelfMaj\BIdeadProj\Client --import
+New-Item -ItemType Directory -Force -Path F:\SelfMaj\BIdeadProj\build\web | Out-Null
+godot --headless --path F:\SelfMaj\BIdeadProj\Client --export-release "Web" F:\SelfMaj\BIdeadProj\build\web\index.html
+powershell -ExecutionPolicy Bypass -File F:\SelfMaj\BIdeadProj\IdeaSoftware\FeishuCursorRemote\kit\publish-web-game.ps1 -Source F:\SelfMaj\BIdeadProj\build\web -Slug "<小写短名>" -Title "<页面上的名字>"
 ```
 
 脚本会写进 `site/feishu-games/<短名>/`，更新 `games.json`，并上传。只改本地、不上传时加 `-NoDeploy`。短名只用小写字母、数字、连字符。

@@ -63,6 +63,22 @@ function isSecretPath(filePath) {
   return false;
 }
 
+/** Decode git status --porcelain paths (quoted + octal escapes on Windows). */
+function decodePorcelainPath(raw) {
+  let s = String(raw || "").trim();
+  if (s.startsWith('"') && s.endsWith('"')) {
+    s = s.slice(1, -1);
+    s = s.replace(/\\([0-7]{3})/g, (_, oct) => String.fromCharCode(parseInt(oct, 8)));
+    s = s.replace(/\\([\\nrt"])/g, (_, ch) => {
+      if (ch === "n") return "\n";
+      if (ch === "r") return "\r";
+      if (ch === "t") return "\t";
+      return ch;
+    });
+  }
+  return s;
+}
+
 async function main() {
   const { cwd, prompt } = parseArgs(process.argv);
   if (!cwd || !fs.existsSync(cwd)) {
@@ -88,7 +104,8 @@ async function main() {
   const skipped = [];
   for (const line of lines) {
     const raw = line.slice(3);
-    const filePath = raw.includes(" -> ") ? raw.split(" -> ").pop() : raw;
+    const decoded = decodePorcelainPath(raw);
+    const filePath = decoded.includes(" -> ") ? decoded.split(" -> ").pop() : decoded;
     if (!filePath) continue;
     if (isSecretPath(filePath)) {
       skipped.push(filePath);

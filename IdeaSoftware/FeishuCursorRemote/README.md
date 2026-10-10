@@ -19,10 +19,11 @@ cd F:\SelfMaj\BIdeadProj\IdeaSoftware\FeishuCursorRemote
 
 ## 发布到网站
 
-海王优选主页的「飞书游戏」在 `http://8.130.110.101/feishu-games/`。Unity 打出 WebGL（Gzip，并勾选 Decompression Fallback）后：
+海王优选主页的「飞书游戏」请用 `https://8.130.110.101/feishu-games/`（IP 自签证书，手机首次点继续）。Godot 用预设 `Web` 无界面导出后：
 
 ```powershell
-.\kit\publish-web-game.ps1 -Source "<WebGL输出目录>" -Slug "<小写短名>" -Title "<页面上的名字>"
+godot --headless --path F:\SelfMaj\BIdeadProj\Client --export-release "Web" F:\SelfMaj\BIdeadProj\build\web\index.html
+.\kit\publish-web-game.ps1 -Source F:\SelfMaj\BIdeadProj\build\web -Slug "<小写短名>" -Title "<页面上的名字>"
 ```
 
 只改本地站点、不上传时加 `-NoDeploy`。

@@ -1,7 +1,7 @@
-/BallGame/Library
-/BallGame/Logs
+/Client/Library
+/Client/Logs
 *.csproj
-/BallGame/Temp
-/BallGame/UserSettings
-/BallGame/.vscode
+/Client/Temp
+/Client/UserSettings
+/Client/.vscode
 *.sln

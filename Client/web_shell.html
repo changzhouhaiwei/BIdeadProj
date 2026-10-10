@@ -23,6 +23,13 @@ html, body, #canvas {
 	border: 0;
 }
 
+/* 竖版舞台：宽高比夹在设计分辨率 720/1560 和背景 1560/1560 之间。 */
+#canvas {
+	position: absolute !important;
+	image-rendering: pixelated;
+	image-rendering: crisp-edges;
+}
+
 body {
 	color: white;
 	background-color: black;
@@ -60,8 +67,8 @@ html.pc-frame iframe {
 	border: 0;
 	display: block;
 	background: #000;
-	width: min(720px, 100vw, calc(100vh * 720 / 1280));
-	height: min(1280px, 100vh, calc(100vw * 1280 / 720));
+	width: min(720px, 100vw, calc(100vh * 720 / 1560));
+	height: min(1560px, 100vh, calc(100vw * 1560 / 720));
 }
 
 #status, #status-splash, #status-progress {
@@ -160,6 +167,35 @@ if (!window.__godotPlay) {
 const GODOT_CONFIG = $GODOT_CONFIG;
 const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
 const engine = new Engine(GODOT_CONFIG);
+
+const STAGE_MIN_ASPECT = 720 / 1560;
+const STAGE_MAX_ASPECT = 1;
+
+function fitPortraitStage() {
+	const canvas = document.getElementById('canvas');
+	const sw = window.innerWidth;
+	const sh = window.innerHeight;
+	let aspect = sw / Math.max(sh, 1);
+	aspect = Math.min(STAGE_MAX_ASPECT, Math.max(STAGE_MIN_ASPECT, aspect));
+	let cssW = sw;
+	let cssH = sw / aspect;
+	if (cssH > sh) {
+		cssH = sh;
+		cssW = sh * aspect;
+	}
+	cssW = Math.max(1, Math.floor(cssW));
+	cssH = Math.max(1, Math.floor(cssH));
+	const dpr = window.devicePixelRatio || 1;
+	canvas.style.width = cssW + 'px';
+	canvas.style.height = cssH + 'px';
+	canvas.style.left = Math.floor((sw - cssW) / 2) + 'px';
+	canvas.style.top = Math.floor((sh - cssH) / 2) + 'px';
+	canvas.width = Math.max(1, Math.floor(cssW * dpr));
+	canvas.height = Math.max(1, Math.floor(cssH * dpr));
+}
+
+fitPortraitStage();
+window.addEventListener('resize', fitPortraitStage);
 
 (function () {
 	const statusOverlay = document.getElementById('status');

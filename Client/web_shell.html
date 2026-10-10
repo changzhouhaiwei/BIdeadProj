@@ -2,8 +2,20 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, viewport-fit=cover">
 		<title>$GODOT_PROJECT_NAME</title>
+		<script>
+			(function () {
+				var coarse = window.matchMedia("(pointer: coarse)").matches;
+				var side = Math.min(window.screen.width, window.screen.height);
+				var phone = coarse && side <= 900;
+				var framed = /(?:\?|&)frame=1(?:&|$)/.test(location.search);
+				window.__godotPlay = phone || framed;
+				if (!window.__godotPlay) {
+					document.documentElement.classList.add("pc-frame");
+				}
+			})();
+		</script>
 		<style>
 html, body, #canvas {
 	margin: 0;
@@ -24,6 +36,32 @@ body {
 
 #canvas:focus {
 	outline: none;
+}
+
+html.pc-frame,
+html.pc-frame body {
+	width: 100%;
+	height: 100%;
+	background: #0e1116;
+	overflow: hidden;
+}
+
+html.pc-frame body {
+	display: grid;
+	place-items: center;
+}
+
+html.pc-frame #canvas,
+html.pc-frame #status {
+	display: none;
+}
+
+html.pc-frame iframe {
+	border: 0;
+	display: block;
+	background: #000;
+	width: min(720px, 100vw, calc(100vh * 720 / 1280));
+	height: min(1280px, 100vh, calc(100vw * 1280 / 720));
 }
 
 #status, #status-splash, #status-progress {
@@ -109,8 +147,16 @@ $GODOT_HEAD_INCLUDE
 			<div id="status-notice"></div>
 		</div>
 
-		<script src="$GODOT_URL"></script>
 		<script>
+if (!window.__godotPlay) {
+	var frame = document.createElement("iframe");
+	frame.title = "游戏";
+	frame.src = location.pathname + "?frame=1";
+	document.body.appendChild(frame);
+} else {
+	var godotScript = document.createElement("script");
+	godotScript.src = "$GODOT_URL";
+	godotScript.onload = function () {
 const GODOT_CONFIG = $GODOT_CONFIG;
 const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
 const engine = new Engine(GODOT_CONFIG);
@@ -219,6 +265,9 @@ const engine = new Engine(GODOT_CONFIG);
 		}, displayFailureNotice);
 	}
 }());
+	};
+	document.body.appendChild(godotScript);
+}
 		</script>
 	</body>
 </html>

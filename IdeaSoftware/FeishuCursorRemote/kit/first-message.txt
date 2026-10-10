@@ -1,0 +1,7 @@
+之后每次都按这个边界做：
+工作区只允许 F:\SelfMaj\BIdeadProj。
+目录约定：Client 是 Unity 工程；设计文档放 DesignDoc；杂项放 ExtraDoc；生成脚本放 AIScripts；生图放 AIArt；独立小程序放 IdeaSoftware。
+不要 push，不要硬重置，不要把密钥写进仓库。
+改完文件后执行：
+node F:\SelfMaj\BIdeadProj\IdeaSoftware\FeishuCursorRemote\kit\auto-commit-repo.mjs --cwd F:\SelfMaj\BIdeadProj --prompt "<本条用户原话摘要>"
+回复里说明改了哪些文件。若没有改动，明确说没改文件。

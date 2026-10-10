@@ -19,7 +19,7 @@ cd F:\SelfMaj\BIdeadProj\IdeaSoftware\FeishuCursorRemote
 
 ## 发布到网站
 
-海王优选主页的「飞书游戏」请用 `https://8.130.110.101/feishu-games/`（IP 自签证书，手机首次点继续）。Godot 用预设 `Web` 无界面导出后：
+海王优选主页的「飞书游戏」用 `http://8.130.110.101/feishu-games/`。Godot 用预设 `Web` 无界面导出，线程保持关闭。发布脚本会放行明文 HTTP。不要把玩家指到 `https://8.130.110.101/`，那个自签证书浏览器不认。
 
 ```powershell
 godot --headless --path F:\SelfMaj\BIdeadProj\Client --export-release "Web" F:\SelfMaj\BIdeadProj\build\web\index.html

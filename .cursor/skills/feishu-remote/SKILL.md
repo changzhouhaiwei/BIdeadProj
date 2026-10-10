@@ -23,9 +23,9 @@ node F:\SelfMaj\BIdeadProj\IdeaSoftware\FeishuCursorRemote\kit\auto-commit-repo.
 
 ## 把 Web 端发到飞书游戏
 
-海王优选主页有「飞书游戏」，线上请用 `https://8.130.110.101/feishu-games/`（Godot Web 需要 HTTPS；HTTP 仍可用但不跑 Godot）。
+海王优选主页有「飞书游戏」，玩家用 `http://8.130.110.101/feishu-games/`。不要改去开 HTTPS，也不要让人打开 `https://8.130.110.101/`：那是 IP 自签证书，浏览器会停在证书错误页。
 
-Godot 无界面导出网页。预设名是 `Web`，线程支持保持关闭。`-Source` 指输出目录本身，里面直接有 `index.html`。
+Godot 无界面导出网页。预设名是 `Web`，线程支持保持关闭。发布脚本会拿掉 Secure Context 那条拦截，明文 HTTP 就能进游戏。`-Source` 指输出目录本身，里面直接有 `index.html`。
 
 ```powershell
 godot --headless --path F:\SelfMaj\BIdeadProj\Client --import

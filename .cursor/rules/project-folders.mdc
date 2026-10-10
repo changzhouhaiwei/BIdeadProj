@@ -5,12 +5,12 @@ alwaysApply: true
 
 # 仓库目录
 
-`Client` 只放 Unity 客户端要使用的内容。生成用的脚本、工具和图片放在仓库最外层。
+`Client` 只放 Godot 客户端工程。生成用的脚本、工具和图片放在仓库最外层。
 
-- Unity 工程：`Client/`
+- Godot 工程：`Client/`
 - 设计文档：`DesignDoc/`
 - 杂项记录：`ExtraDoc/`
 - AI 生成的脚本和工具：`AIScripts/`
 - AI 生图：`AIArt/`
 
-不要把 `AIScripts` 或 `AIArt` 放进 `Client/Assets`。只有客户端要运行或要引用的脚本、图片才进入 `Client/Assets/`。细节见 `.cursor/skills/project-folders/SKILL.md`。
+不要把 `AIScripts` 或 `AIArt` 放进 `Client`。只有客户端要运行或要引用的场景、脚本、图片才进入 `Client/`。细节见 `.cursor/skills/project-folders/SKILL.md`。

@@ -1,7 +1,7 @@
-/Client/Library
-/Client/Logs
-*.csproj
-/Client/Temp
-/Client/UserSettings
-/Client/.vscode
-*.sln
+# Godot editor cache and import data
+.godot/
+*.translation
+export_credentials.cfg
+
+# Web export output
+/build/

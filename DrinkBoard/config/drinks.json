@@ -1,0 +1,33 @@
+{
+  "default_title": "今晚酒局",
+  "drinks": [
+    {
+      "key": "beer_4",
+      "name": "4° 啤酒",
+      "abv": 4,
+      "step_ml": 100,
+      "presets_ml": [330, 500]
+    },
+    {
+      "key": "wine_12",
+      "name": "12° 红酒",
+      "abv": 12,
+      "step_ml": 50,
+      "presets_ml": [50, 100, 150]
+    },
+    {
+      "key": "baijiu_42",
+      "name": "42° 白酒",
+      "abv": 42,
+      "step_ml": 10,
+      "presets_ml": [20, 50, 100]
+    },
+    {
+      "key": "baijiu_53",
+      "name": "53° 白酒",
+      "abv": 53,
+      "step_ml": 10,
+      "presets_ml": [20, 50, 100]
+    }
+  ]
+}

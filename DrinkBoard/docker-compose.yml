@@ -1,0 +1,29 @@
+# 只给本机演示。线上用 deploy/ 里的 systemd，端口只听 127.0.0.1。
+services:
+  drinkboard:
+    build: .
+    ports:
+      - "8773:8773"
+    environment:
+      DRINKBOARD_DB: /data/drinkboard.sqlite3
+      DRINKBOARD_BACKUP_DIR: /data/backups
+      DRINKBOARD_DRINKS_FILE: /data/drinks.json
+      DRINKBOARD_SEED_DEMO: "1"
+      DRINKBOARD_DOCS: "1"
+      DRINKBOARD_ALLOWED_ORIGINS: http://127.0.0.1:8773,http://localhost:8773
+    volumes:
+      - drinkdata:/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8773/api/health')",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  drinkdata:

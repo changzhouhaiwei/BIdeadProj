@@ -5,3 +5,6 @@ export_credentials.cfg
 
 # Web export output
 /build/
+
+# 密钥不要进库
+*.pem

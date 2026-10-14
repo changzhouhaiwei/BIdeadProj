@@ -1,0 +1,23 @@
+[Unit]
+Description=DrinkBoard shared drinking tracker
+After=network.target
+
+[Service]
+Type=simple
+User=drinkboard
+Group=drinkboard
+WorkingDirectory=/opt/drinkboard
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+EnvironmentFile=-/etc/drinkboard.env
+ExecStart=/opt/drinkboard/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8773 --app-dir /opt/drinkboard
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/drinkboard
+
+[Install]
+WantedBy=multi-user.target
